@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="kaka/kaka.vcxproj" Id="5412b55d-0048-4765-981c-e553861931c4" />
+</Solution>
