@@ -156,6 +156,7 @@
     <ClInclude Include="Mappings.h" />
     <ClInclude Include="Minimap.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SpeedHack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Desktop\minhook-master\src\buffer.c" />
@@ -165,6 +166,7 @@
     <ClCompile Include="..\..\..\..\Desktop\minhook-master\src\trampoline.c" />
     <ClCompile Include="Aimbot.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Mappings.cpp" />
     <ClCompile Include="Minimap.cpp" />
     <ClCompile Include="pch.cpp">
@@ -173,6 +175,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SpeedHack.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

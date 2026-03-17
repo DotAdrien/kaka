@@ -6,7 +6,8 @@
 #include <jni.h>
 #include <jvmti.h>
 
-struct EntityData { double x, y, z; std::string name; };
+// On a ajouté le 'yaw' ici 🥵
+struct EntityData { double x, y, z; float yaw; std::string name; };
 
 struct RadarData {
     double myX = 0, myY = 0, myZ = 0;

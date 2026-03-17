@@ -1,20 +1,17 @@
 #include "Mappings.h"
 
-// Définitions des variables globales 🤓
-RadarData g_radar;
-JavaVM* g_vm = nullptr;
-JNIEnv* g_env = nullptr;
-bool cacheInit = false;
-
-jclass mcClass, clientLevelClass, playerClass, itemEntityClass, armorStandClass, componentClass;
-jclass connectionClass, playerInfoClass, gameProfileClass, gameTypeClass;
-jmethodID getInstance, getX, getY, getZ, getYaw;
-jmethodID getEntitiesMethod, iteratorMethod, hasNextMethod, nextMethod;
-jmethodID getNameMethod, getStringMethod;
-jmethodID setYRotMethod, setXRotMethod;
-jmethodID getConnectionMethod, getProfileMethod, getGameModeMethod;
-jmethodID getProfileNameMethod, getEnumNameMethod, mapValuesMethod;
-jfieldID levelField, myPlayerField, playerInfoMapField;
+// On crée les variables en mémoire ici 🥵
+jclass mcClass = nullptr, clientLevelClass = nullptr, playerClass = nullptr, itemEntityClass = nullptr, armorStandClass = nullptr, componentClass = nullptr;
+jclass connectionClass = nullptr, playerInfoClass = nullptr, gameProfileClass = nullptr, gameTypeClass = nullptr, vec3Class = nullptr;
+jmethodID getInstance = nullptr, getX = nullptr, getY = nullptr, getZ = nullptr, getYaw = nullptr;
+jmethodID getEntitiesMethod = nullptr, iteratorMethod = nullptr, hasNextMethod = nullptr, nextMethod = nullptr;
+jmethodID getNameMethod = nullptr, getStringMethod = nullptr;
+jmethodID setYRotMethod = nullptr, setXRotMethod = nullptr;
+jmethodID getConnectionMethod = nullptr, getProfileMethod = nullptr, getGameModeMethod = nullptr;
+jmethodID getProfileNameMethod = nullptr, getEnumNameMethod = nullptr, mapValuesMethod = nullptr;
+jmethodID getDeltaMovementMethod = nullptr, setDeltaMovementMethod = nullptr;
+jfieldID vec3X = nullptr, vec3Y = nullptr, vec3Z = nullptr;
+jfieldID levelField = nullptr, myPlayerField = nullptr, playerInfoMapField = nullptr;
 
 jclass GetClass(JNIEnv* env, JavaVM* vm, const char* name) {
     jvmtiEnv* jvmti;
@@ -48,6 +45,7 @@ void InitJNICache() {
     playerInfoClass = GetClass(g_env, g_vm, "Lnet/minecraft/client/multiplayer/PlayerInfo;");
     gameProfileClass = GetClass(g_env, g_vm, "Lcom/mojang/authlib/GameProfile;");
     gameTypeClass = GetClass(g_env, g_vm, "Lnet/minecraft/world/level/GameType;");
+    vec3Class = GetClass(g_env, g_vm, "Lnet/minecraft/world/phys/Vec3;");
 
     jclass localIterable = g_env->FindClass("java/lang/Iterable");
     jclass localIterator = g_env->FindClass("java/util/Iterator");
@@ -70,13 +68,26 @@ void InitJNICache() {
         getNameMethod = g_env->GetMethodID(entityClass, "m_7755_", "()Lnet/minecraft/network/chat/Component;");
         getStringMethod = g_env->GetMethodID(componentClass, "getString", "()Ljava/lang/String;");
         getEntitiesMethod = g_env->GetMethodID(clientLevelClass, "m_104735_", "()Ljava/lang/Iterable;");
+
+        // SpeedHack ! 🚀
+        getDeltaMovementMethod = g_env->GetMethodID(entityClass, "m_20184_", "()Lnet/minecraft/world/phys/Vec3;");
+        setDeltaMovementMethod = g_env->GetMethodID(entityClass, "m_20334_", "(DDD)V");
+    }
+
+    if (vec3Class) {
+        vec3X = g_env->GetFieldID(vec3Class, "f_82479_", "D");
+        if (!vec3X) { g_env->ExceptionClear(); vec3X = g_env->GetFieldID(vec3Class, "x", "D"); }
+        vec3Y = g_env->GetFieldID(vec3Class, "f_82480_", "D");
+        if (!vec3Y) { g_env->ExceptionClear(); vec3Y = g_env->GetFieldID(vec3Class, "y", "D"); }
+        vec3Z = g_env->GetFieldID(vec3Class, "f_82481_", "D");
+        if (!vec3Z) { g_env->ExceptionClear(); vec3Z = g_env->GetFieldID(vec3Class, "z", "D"); }
     }
 
     if (connectionClass && playerInfoClass && gameProfileClass) {
         getConnectionMethod = g_env->GetMethodID(mcClass, "m_91403_", "()Lnet/minecraft/client/multiplayer/ClientPacketListener;");
         playerInfoMapField = g_env->GetFieldID(connectionClass, "f_104892_", "Ljava/util/Map;");
         getProfileMethod = g_env->GetMethodID(playerInfoClass, "m_105312_", "()Lcom/mojang/authlib/GameProfile;");
-        getGameModeMethod = g_env->GetMethodID(playerInfoClass, "m_105315_", "()Lnet/minecraft/world/level/GameType;");
+        getGameModeMethod = g_env->GetMethodID(playerInfoClass, "m_105325_", "()Lnet/minecraft/world/level/GameType;");
         getProfileNameMethod = g_env->GetMethodID(gameProfileClass, "getName", "()Ljava/lang/String;");
     }
 
@@ -90,7 +101,7 @@ void InitJNICache() {
     g_env->DeleteLocalRef(localIterator);
     g_env->DeleteLocalRef(localEnum);
     g_env->DeleteLocalRef(localMap);
-    g_env->DeleteLocalRef(entityClass);
+    g_env->DeleteGlobalRef(entityClass);
 
     cacheInit = true;
 }
