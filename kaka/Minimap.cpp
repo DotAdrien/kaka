@@ -103,7 +103,7 @@ void UpdateRadarData() {
                             double eX = g_env->CallDoubleMethod(entityObj, getX);
                             double eY = g_env->CallDoubleMethod(entityObj, getY);
                             double eZ = g_env->CallDoubleMethod(entityObj, getZ);
-                            float eYaw = g_env->CallFloatMethod(entityObj, getYaw); // 😱 NOUVEAU
+                            float eYaw = g_env->CallFloatMethod(entityObj, getYaw);
                             std::string eName = GetEntityName(entityObj);
 
                             if (g_env->IsInstanceOf(entityObj, playerClass)) {
@@ -125,6 +125,9 @@ void UpdateRadarData() {
         }
 
         if (foundTarget) RunAimbot(pX, pY, pZ, targetX, targetY, targetZ, myPlayer);
+
+        // NOUVEAU : Le SpeedHack s'active ici ! 🚀🥵
+        RunSpeedHack(myPlayer, pYaw);
 
         {
             std::lock_guard<std::mutex> lock(g_radar.mtx);
@@ -193,32 +196,27 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             DeleteObject(otherBrush);
 
             HBRUSH redBrush = CreateSolidBrush(RGB(255, 0, 0));
-            HPEN lookPen = CreatePen(PS_SOLID, 1, RGB(255, 255, 255)); // Crayon blanc pour la ligne 🫣
+            HPEN lookPen = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
 
             for (auto& e : g_radar.enemies) {
-                // Position du joueur
                 float rx = e.x - g_radar.myX; float rz = e.z - g_radar.myZ;
                 float rotX = rx * cosA + rz * sinA; float rotZ = -rx * sinA + rz * cosA;
                 int sx = radarW / 2 - (int)(rotX * MAP_SCALE); int sy = h / 2 - (int)(rotZ * MAP_SCALE);
 
                 if (sx > 0 && sx < radarW && sy > 0 && sy < h) {
-                    // Dessin du carré
                     RECT eRect = { sx - 3, sy - 3, sx + 3, sy + 3 };
                     FillRect(memDC, &eRect, redBrush);
                     TextOutA(memDC, sx + 5, sy - 5, e.name.c_str(), e.name.length());
 
-                    // NOUVEAU : Dessin de la ligne de vision (trait de 3 blocs de long) 🥵
                     float lookDist = 3.0f;
                     float lx = e.x - sin(e.yaw * 3.14159265f / 180.0f) * lookDist;
                     float lz = e.z + cos(e.yaw * 3.14159265f / 180.0f) * lookDist;
 
-                    // On transforme le point regardé sur le radar
                     float rlx = lx - g_radar.myX; float rlz = lz - g_radar.myZ;
                     float rotLX = rlx * cosA + rlz * sinA; float rotLZ = -rlx * sinA + rlz * cosA;
                     int endX = radarW / 2 - (int)(rotLX * MAP_SCALE);
                     int endY = h / 2 - (int)(rotLZ * MAP_SCALE);
 
-                    // On trace la ligne ! 🚀
                     SelectObject(memDC, lookPen);
                     MoveToEx(memDC, sx, sy, NULL);
                     LineTo(memDC, endX, endY);
@@ -231,7 +229,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             RECT pRect = { radarW / 2 - 3, h / 2 - 3, radarW / 2 + 3, h / 2 + 3 };
             FillRect(memDC, &pRect, meBrush);
 
-            // Ligne pour notre propre vision (toujours vers le haut !) 🤓
             HPEN myLookPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
             SelectObject(memDC, myLookPen);
             MoveToEx(memDC, radarW / 2, h / 2, NULL);
