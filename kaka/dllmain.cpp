@@ -1,5 +1,5 @@
 #include "Globals.h"
-#include "Minimap.h"
+#include "GUI.h"
 
 DWORD WINAPI MainThread(HMODULE hModule) {
     HMODULE jvmHandle = GetModuleHandleA("jvm.dll");
