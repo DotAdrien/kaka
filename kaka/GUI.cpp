@@ -1,10 +1,13 @@
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#include <windows.h>
 #include "GUI.h"
 #include "Minimap.h"
 #include "Globals.h"
 #include "Blink.h"
 #include <cmath>
 
-#define MAP_SCALE 4.0f 
+#define MAP_SCALE 4.0f
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     if (uMsg == WM_CREATE) SetTimer(hwnd, 1, 16, NULL);
