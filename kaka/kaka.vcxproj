@@ -152,6 +152,7 @@
     <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\trampoline.h" />
     <ClInclude Include="Aimbot.h" />
     <ClInclude Include="Blink.h" />
+    <ClInclude Include="FireSelectSpam.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="GUI.h" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Aimbot.cpp" />
     <ClCompile Include="Blink.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="FireSelectSpam.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Mappings.cpp" />
