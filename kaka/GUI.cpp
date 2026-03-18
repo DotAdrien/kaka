@@ -5,7 +5,8 @@
 #include "Minimap.h"
 #include "Globals.h"
 #include "Blink.h"
-#include "FireSelectSpam.h" // ✨ Ajout de l'include
+#include "FireSelectSpam.h"
+#include "FakeDestroy.h" 
 #include <cmath>
 #define MAP_SCALE 4.0f
 
@@ -14,7 +15,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     else if (uMsg == WM_TIMER) {
         UpdateRadarData();
         Blink::Update();
-        FireSelectSpam::Update(); // ✨ Mise à jour du spam
+        FireSelectSpam::Update();
+        FakeDestroy::Update();
         InvalidateRect(hwnd, NULL, FALSE);
     }
     else if (uMsg == WM_PAINT) {
@@ -52,7 +54,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
             SetBkMode(memDC, TRANSPARENT);
 
-            // Dessin du Blink 🚀
             static bool lKeyPressed = false;
             if (GetAsyncKeyState('L') & 0x8000) {
                 if (!lKeyPressed) {
@@ -62,15 +63,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     lKeyPressed = true;
                 }
             }
-            else {
-                lKeyPressed = false;
-            }
+            else lKeyPressed = false;
 
             if (Blink::active) SetTextColor(memDC, RGB(0, 255, 0));
             else SetTextColor(memDC, RGB(100, 100, 100));
             TextOutA(memDC, 10, 10, "[L] BLINK", 9);
 
-            // ✨ Dessin du Spam TACZ
             static bool oKeyPressed = false;
             if (GetAsyncKeyState('O') & 0x8000) {
                 if (!oKeyPressed) {
@@ -78,13 +76,24 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     oKeyPressed = true;
                 }
             }
-            else {
-                oKeyPressed = false;
-            }
+            else oKeyPressed = false;
 
-            if (FireSelectSpam::active) SetTextColor(memDC, RGB(255, 0, 0)); // Rouge en actif 💥
+            if (FireSelectSpam::active) SetTextColor(memDC, RGB(255, 0, 0));
             else SetTextColor(memDC, RGB(100, 100, 100));
-            TextOutA(memDC, 10, 30, "[O] TACZ SPAM", 13); // Décalé en dessous du Blink
+            TextOutA(memDC, 10, 30, "[O] TACZ SPAM", 13);
+
+            static bool pKeyPressed = false;
+            if (GetAsyncKeyState('P') & 0x8000) {
+                if (!pKeyPressed) {
+                    FakeDestroy::active = !FakeDestroy::active;
+                    pKeyPressed = true;
+                }
+            }
+            else pKeyPressed = false;
+
+            if (FakeDestroy::active) SetTextColor(memDC, RGB(255, 105, 180));
+            else SetTextColor(memDC, RGB(100, 100, 100));
+            TextOutA(memDC, 10, 50, "[P] FAKE DESTROY", 16);
 
             HBRUSH otherBrush = CreateSolidBrush(RGB(255, 255, 255));
             SetTextColor(memDC, RGB(255, 255, 255));

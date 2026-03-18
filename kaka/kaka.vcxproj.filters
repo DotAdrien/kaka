@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Source Files\minhook">
       <UniqueIdentifier>{2c643ce4-4c0b-4067-bdbd-c93381f49fbd}</UniqueIdentifier>
     </Filter>
@@ -45,29 +41,32 @@
     <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\hde\table32.h">
       <Filter>Source Files\minhook</Filter>
     </ClInclude>
-    <ClInclude Include="Globals.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mappings.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Aimbot.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="SpeedHack.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Minimap.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpeedHack.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Blink.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Mappings.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GUI.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FireSelectSpam.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Blink.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Aimbot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeDestroy.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +113,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FireSelectSpam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeDestroy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
