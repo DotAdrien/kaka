@@ -1,8 +1,9 @@
 #pragma once
+#include <winsock2.h>
 #include <windows.h>
 #include <vector>
 #include <mutex>
-#include <winsock2.h>
+
 
 namespace Blink {
     extern bool active;
