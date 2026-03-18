@@ -5,8 +5,8 @@
 #include "Minimap.h"
 #include "Globals.h"
 #include "Blink.h"
+#include "FireSelectSpam.h" // ✨ Ajout de l'include
 #include <cmath>
-
 #define MAP_SCALE 4.0f
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -14,6 +14,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     else if (uMsg == WM_TIMER) {
         UpdateRadarData();
         Blink::Update();
+        FireSelectSpam::Update(); // ✨ Mise à jour du spam
         InvalidateRect(hwnd, NULL, FALSE);
     }
     else if (uMsg == WM_PAINT) {
@@ -68,6 +69,22 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             if (Blink::active) SetTextColor(memDC, RGB(0, 255, 0));
             else SetTextColor(memDC, RGB(100, 100, 100));
             TextOutA(memDC, 10, 10, "[L] BLINK", 9);
+
+            // ✨ Dessin du Spam TACZ
+            static bool oKeyPressed = false;
+            if (GetAsyncKeyState('O') & 0x8000) {
+                if (!oKeyPressed) {
+                    FireSelectSpam::active = !FireSelectSpam::active;
+                    oKeyPressed = true;
+                }
+            }
+            else {
+                oKeyPressed = false;
+            }
+
+            if (FireSelectSpam::active) SetTextColor(memDC, RGB(255, 0, 0)); // Rouge en actif 💥
+            else SetTextColor(memDC, RGB(100, 100, 100));
+            TextOutA(memDC, 10, 30, "[O] TACZ SPAM", 13); // Décalé en dessous du Blink
 
             HBRUSH otherBrush = CreateSolidBrush(RGB(255, 255, 255));
             SetTextColor(memDC, RGB(255, 255, 255));
