@@ -1,17 +1,23 @@
 #include "Mappings.h"
 
-// On crée les variables en mémoire ici 🥵
 jclass mcClass = nullptr, clientLevelClass = nullptr, playerClass = nullptr, itemEntityClass = nullptr, armorStandClass = nullptr, componentClass = nullptr;
 jclass connectionClass = nullptr, playerInfoClass = nullptr, gameProfileClass = nullptr, gameTypeClass = nullptr, vec3Class = nullptr;
+jclass blockHitResultClass = nullptr, blockClass = nullptr, blocksClass = nullptr, blockPosClass = nullptr, vec3iClass = nullptr;
+
 jmethodID getInstance = nullptr, getX = nullptr, getY = nullptr, getZ = nullptr, getYaw = nullptr;
 jmethodID getEntitiesMethod = nullptr, iteratorMethod = nullptr, hasNextMethod = nullptr, nextMethod = nullptr;
 jmethodID getNameMethod = nullptr, getStringMethod = nullptr;
 jmethodID setYRotMethod = nullptr, setXRotMethod = nullptr;
 jmethodID getConnectionMethod = nullptr, getProfileMethod = nullptr, getGameModeMethod = nullptr;
 jmethodID getProfileNameMethod = nullptr, getEnumNameMethod = nullptr, mapValuesMethod = nullptr;
+
 jmethodID getDeltaMovementMethod = nullptr, setDeltaMovementMethod = nullptr;
+jmethodID getBlockPosMethod = nullptr, getBlockStateMethod = nullptr, defaultStateMethod = nullptr, setBlockMethod = nullptr;
+jmethodID getBlockX = nullptr, getBlockY = nullptr, getBlockZ = nullptr;
+
 jfieldID vec3X = nullptr, vec3Y = nullptr, vec3Z = nullptr;
 jfieldID levelField = nullptr, myPlayerField = nullptr, playerInfoMapField = nullptr;
+jfieldID hitResultField = nullptr, airField = nullptr;
 
 jclass GetClass(JNIEnv* env, JavaVM* vm, const char* name) {
     jvmtiEnv* jvmti;
@@ -47,6 +53,12 @@ void InitJNICache() {
     gameTypeClass = GetClass(g_env, g_vm, "Lnet/minecraft/world/level/GameType;");
     vec3Class = GetClass(g_env, g_vm, "Lnet/minecraft/world/phys/Vec3;");
 
+    blockHitResultClass = GetClass(g_env, g_vm, "Lnet/minecraft/world/phys/BlockHitResult;");
+    blockClass = GetClass(g_env, g_vm, "Lnet/minecraft/world/level/block/Block;");
+    blocksClass = GetClass(g_env, g_vm, "Lnet/minecraft/world/level/block/Blocks;");
+    blockPosClass = GetClass(g_env, g_vm, "Lnet/minecraft/core/BlockPos;");
+    vec3iClass = GetClass(g_env, g_vm, "Lnet/minecraft/core/Vec3i;");
+
     jclass localIterable = g_env->FindClass("java/lang/Iterable");
     jclass localIterator = g_env->FindClass("java/util/Iterator");
     jclass localEnum = g_env->FindClass("java/lang/Enum");
@@ -69,7 +81,6 @@ void InitJNICache() {
         getStringMethod = g_env->GetMethodID(componentClass, "getString", "()Ljava/lang/String;");
         getEntitiesMethod = g_env->GetMethodID(clientLevelClass, "m_104735_", "()Ljava/lang/Iterable;");
 
-        // SpeedHack ! 🚀
         getDeltaMovementMethod = g_env->GetMethodID(entityClass, "m_20184_", "()Lnet/minecraft/world/phys/Vec3;");
         setDeltaMovementMethod = g_env->GetMethodID(entityClass, "m_20334_", "(DDD)V");
     }
@@ -89,6 +100,25 @@ void InitJNICache() {
         getProfileMethod = g_env->GetMethodID(playerInfoClass, "m_105312_", "()Lcom/mojang/authlib/GameProfile;");
         getGameModeMethod = g_env->GetMethodID(playerInfoClass, "m_105325_", "()Lnet/minecraft/world/level/GameType;");
         getProfileNameMethod = g_env->GetMethodID(gameProfileClass, "getName", "()Ljava/lang/String;");
+    }
+
+    if (mcClass && clientLevelClass && blockPosClass) {
+        hitResultField = g_env->GetFieldID(mcClass, "f_91077_", "Lnet/minecraft/world/phys/HitResult;");
+        getBlockPosMethod = g_env->GetMethodID(blockHitResultClass, "m_82425_", "()Lnet/minecraft/core/BlockPos;");
+        getBlockStateMethod = g_env->GetMethodID(clientLevelClass, "m_8055_", "(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;");
+        setBlockMethod = g_env->GetMethodID(clientLevelClass, "m_7731_", "(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z");
+
+        airField = g_env->GetStaticFieldID(blocksClass, "f_50016_", "Lnet/minecraft/world/level/block/Block;");
+        defaultStateMethod = g_env->GetMethodID(blockClass, "m_49966_", "()Lnet/minecraft/world/level/block/state/BlockState;");
+
+        if (vec3iClass) {
+            getBlockX = g_env->GetMethodID(vec3iClass, "m_123341_", "()I");
+            if (!getBlockX) { g_env->ExceptionClear(); getBlockX = g_env->GetMethodID(blockPosClass, "m_123341_", "()I"); }
+            getBlockY = g_env->GetMethodID(vec3iClass, "m_123342_", "()I");
+            if (!getBlockY) { g_env->ExceptionClear(); getBlockY = g_env->GetMethodID(blockPosClass, "m_123342_", "()I"); }
+            getBlockZ = g_env->GetMethodID(vec3iClass, "m_123343_", "()I");
+            if (!getBlockZ) { g_env->ExceptionClear(); getBlockZ = g_env->GetMethodID(blockPosClass, "m_123343_", "()I"); }
+        }
     }
 
     getEnumNameMethod = g_env->GetMethodID(localEnum, "name", "()Ljava/lang/String;");

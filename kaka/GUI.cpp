@@ -6,7 +6,8 @@
 #include "Globals.h"
 #include "Blink.h"
 #include "FireSelectSpam.h"
-#include "FakeDestroy.h" 
+#include "FakeDestroy.h"
+#include "DupePoC.h"
 #include <cmath>
 #define MAP_SCALE 4.0f
 
@@ -69,6 +70,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             else SetTextColor(memDC, RGB(100, 100, 100));
             TextOutA(memDC, 10, 10, "[L] BLINK", 9);
 
+
+
+
             static bool oKeyPressed = false;
             if (GetAsyncKeyState('O') & 0x8000) {
                 if (!oKeyPressed) {
@@ -89,11 +93,31 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     pKeyPressed = true;
                 }
             }
+
+
             else pKeyPressed = false;
+            SetTextColor(memDC, RGB(100, 100, 100));
+            TextOutA(memDC, 10, 50, "[K] DUPE POC", 12);
+
+            static bool kKeyPressed = false;
+            if (GetAsyncKeyState('K') & 0x8000) {
+                if (!kKeyPressed) {
+                    SetTextColor(memDC, RGB(255, 0, 0));
+                    TextOutA(memDC, 10, 50, "[K] DUPE POC", 12);
+
+                    // Lance le PoC sur le slot 0 (arme) et 1 (accessoire)
+                    DupePoC::Run(g_env, 0, 1);
+
+                    kKeyPressed = true;
+                }
+            }
+            else {
+                kKeyPressed = false;
+            }
 
             if (FakeDestroy::active) SetTextColor(memDC, RGB(255, 105, 180));
             else SetTextColor(memDC, RGB(100, 100, 100));
-            TextOutA(memDC, 10, 50, "[P] FAKE DESTROY", 16);
+            TextOutA(memDC, 10, 70, "[P] FAKE DESTROY", 16);
 
             HBRUSH otherBrush = CreateSolidBrush(RGB(255, 255, 255));
             SetTextColor(memDC, RGB(255, 255, 255));
