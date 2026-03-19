@@ -154,14 +154,12 @@
     <ClInclude Include="Blink.h" />
     <ClInclude Include="DupePoC.h" />
     <ClInclude Include="FakeDestroy.h" />
-    <ClInclude Include="FireSelectSpam.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Mappings.h" />
     <ClInclude Include="Minimap.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="SpeedHack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Desktop\minhook-master\src\buffer.c" />
@@ -174,7 +172,6 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DupePoC.cpp" />
     <ClCompile Include="FakeDestroy.cpp" />
-    <ClCompile Include="FireSelectSpam.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Mappings.cpp" />
@@ -185,7 +182,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SpeedHack.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

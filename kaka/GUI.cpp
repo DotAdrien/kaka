@@ -5,7 +5,6 @@
 #include "Minimap.h"
 #include "Globals.h"
 #include "Blink.h"
-#include "FireSelectSpam.h"
 #include "FakeDestroy.h"
 #include "DupePoC.h"
 #include <cmath>
@@ -16,7 +15,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     else if (uMsg == WM_TIMER) {
         UpdateRadarData();
         Blink::Update();
-        FireSelectSpam::Update();
         FakeDestroy::Update();
         InvalidateRect(hwnd, NULL, FALSE);
     }
@@ -70,22 +68,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             else SetTextColor(memDC, RGB(100, 100, 100));
             TextOutA(memDC, 10, 10, "[L] BLINK", 9);
 
-
-
-
-            static bool oKeyPressed = false;
-            if (GetAsyncKeyState('O') & 0x8000) {
-                if (!oKeyPressed) {
-                    FireSelectSpam::active = !FireSelectSpam::active;
-                    oKeyPressed = true;
-                }
-            }
-            else oKeyPressed = false;
-
-            if (FireSelectSpam::active) SetTextColor(memDC, RGB(255, 0, 0));
-            else SetTextColor(memDC, RGB(100, 100, 100));
-            TextOutA(memDC, 10, 30, "[O] TACZ SPAM", 13);
-
             static bool pKeyPressed = false;
             if (GetAsyncKeyState('P') & 0x8000) {
                 if (!pKeyPressed) {
@@ -93,8 +75,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     pKeyPressed = true;
                 }
             }
-
-
             else pKeyPressed = false;
             SetTextColor(memDC, RGB(100, 100, 100));
             TextOutA(memDC, 10, 50, "[K] DUPE POC", 12);
@@ -104,10 +84,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 if (!kKeyPressed) {
                     SetTextColor(memDC, RGB(255, 0, 0));
                     TextOutA(memDC, 10, 50, "[K] DUPE POC", 12);
-
-                    // Lance le PoC sur le slot 0 (arme) et 1 (accessoire)
                     DupePoC::Run(g_env, 0, 1);
-
                     kKeyPressed = true;
                 }
             }

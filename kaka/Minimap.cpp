@@ -2,7 +2,6 @@
 #include "Globals.h"
 #include "Mappings.h"
 #include "Aimbot.h"
-#include "SpeedHack.h"
 #include <algorithm>
 
 void UpdateRadarData() {
@@ -122,7 +121,6 @@ void UpdateRadarData() {
         }
 
         if (foundTarget) RunAimbot(pX, pY, pZ, targetX, targetY, targetZ, myPlayer);
-        RunSpeedHack(myPlayer, pYaw);
 
         {
             std::lock_guard<std::mutex> lock(g_radar.mtx);

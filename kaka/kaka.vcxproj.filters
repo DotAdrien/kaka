@@ -41,9 +41,6 @@
     <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\hde\table32.h">
       <Filter>Source Files\minhook</Filter>
     </ClInclude>
-    <ClInclude Include="SpeedHack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Minimap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,9 +51,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Globals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FireSelectSpam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Blink.h">
@@ -103,9 +97,6 @@
     <ClCompile Include="Minimap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SpeedHack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Globals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,9 +104,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FireSelectSpam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FakeDestroy.cpp">
