@@ -1,55 +1,41 @@
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include "GUI.h"
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include <winsock2.h>
+#include <mutex>
 #include "Globals.h"
-#include <string>
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "ws2_32.lib")
 
-// Procédure de fenêtre ultra-légère
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    switch (uMsg) {
-        case WM_PAINT: {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
-            // On dessine uniquement du texte discret en haut à gauche
-            SetBkMode(hdc, TRANSPARENT);
-            SetTextColor(hdc, RGB(0, 255, 0)); // Vert discret
-            TextOutA(hdc, 5, 5, "System Ready", 12); 
-            EndPaint(hwnd, &ps);
-            break;
-        }
-        case WM_ERASEBKGND: return 1; // Empêche le scintillement
-        case WM_DESTROY: PostQuitMessage(0); return 0;
+// À appeler dans ta boucle MainThread après UpdateRadarData()
+void SendRadarDataUDP() {
+    static SOCKET s = INVALID_SOCKET;
+    static sockaddr_in dest;
+
+    // Initialisation du socket local
+    if (s == INVALID_SOCKET) {
+        WSADATA wsa;
+        WSAStartup(MAKEWORD(2, 2), &wsa);
+        s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+        dest.sin_family = AF_INET;
+        dest.sin_port = htons(9999);
+        dest.sin_addr.s_addr = inet_addr("127.0.0.1");
     }
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
-}
 
-void StartRadarWindow(HMODULE hModule) {
-    WNDCLASSEX wc = { sizeof(WNDCLASSEX) };
-    wc.lpfnWndProc = WindowProc;
-    wc.hInstance = hModule;
-    wc.lpszClassName = L"SystemCache_Proc"; // Nom de classe très générique
-    RegisterClassEx(&wc);
+    std::lock_guard<std::mutex> lock(g_radar.mtx);
 
-    // Création d'une fenêtre Overlay invisible/transparente
-    HWND hwnd = CreateWindowEx(
-        WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE,
-        wc.lpszClassName, L"", 
-        WS_POPUP, // Pas de bordures, pas de titre
-        10, 10, 200, 100, // Petite zone discrète
-        NULL, NULL, hModule, NULL
-    );
+    // Structure simple pour envoyer les entités
+    struct Packet { float x, z; int type; } packet;
 
-    // Rend la fenêtre transparente (Opacité 150/255)
-    SetLayeredWindowAttributes(hwnd, 0, 150, LWA_ALPHA);
-    
-    // Rendre la fenêtre invisible pour les captures d'écran (Anti-Cheat)
-    SetWindowDisplayAffinity(hwnd, WDA_EXCLUDEFROMCAPTURE);
+    // Envoi de ta position (Type 0)
+    packet.x = (float)g_radar.myX;
+    packet.z = (float)g_radar.myZ;
+    packet.type = 0;
+    sendto(s, (char*)&packet, sizeof(packet), 0, (sockaddr*)&dest, sizeof(dest));
 
-    ShowWindow(hwnd, SW_SHOW);
-
-    MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+    // Envoi des ennemis (Type 1)
+    for (auto& e : g_radar.enemies) {
+        packet.x = (float)e.x;
+        packet.z = (float)e.z;
+        packet.type = 1;
+        sendto(s, (char*)&packet, sizeof(packet), 0, (sockaddr*)&dest, sizeof(dest));
     }
 }
