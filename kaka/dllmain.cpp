@@ -4,19 +4,19 @@
 #include "MinHook.h"
 #include "Globals.h"
 #include "DupePoC.h" // 📦 Import du module de dupe
+#include "VMTHook.h"
+#include "pch.h"
 
-LONG WINAPI CrashHandler(EXCEPTION_POINTERS* ExceptionInfo) {
-    DWORD code = ExceptionInfo->ExceptionRecord->ExceptionCode;
-    if (code == 0x4001000a || code == 0x40010006 || code == 0x406D1388) return EXCEPTION_CONTINUE_SEARCH;
-
-    std::ofstream log("kaka_crash_log.txt", std::ios::app);
-    log << "💥 CRASH DETECTE DANS LE MODULE DUPE : 0x" << std::hex << code << "\n";
-    log.close();
-    return EXCEPTION_CONTINUE_SEARCH;
+void ErasePEHeader(HINSTANCE hModule) {
+    DWORD oldProtect;
+    VirtualProtect(hModule, 4096, PAGE_READWRITE, &oldProtect);
+    ZeroMemory(hModule, 4096);
+    VirtualProtect(hModule, 4096, oldProtect, &oldProtect);
 }
 
-DWORD WINAPI MainThread(HMODULE hModule) {
-    AddVectoredExceptionHandler(1, CrashHandler);
+DWORD WINAPI MainThread(LPVOID lpParam) {
+    ErasePEHeader((HINSTANCE)lpParam); // On efface les traces 😶
+    HMODULE hModule = (HMODULE)lpParam;
 
     if (MH_Initialize() != MH_OK) {
         FreeLibraryAndExitThread(hModule, 0);
@@ -58,15 +58,14 @@ DWORD WINAPI MainThread(HMODULE hModule) {
     }
 
     MH_Uninitialize();
-    RemoveVectoredExceptionHandler(CrashHandler);
     FreeLibraryAndExitThread(hModule, 0);
     return 0;
 }
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
-    if (reason == DLL_PROCESS_ATTACH) {
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
+    if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
-        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, nullptr);
+        CreateThread(nullptr, 0, MainThread, hModule, 0, nullptr);
     }
     return TRUE;
 }

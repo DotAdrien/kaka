@@ -65,6 +65,9 @@
     <ClInclude Include="minhook\MinHook.h">
       <Filter>Source Files\minehook</Filter>
     </ClInclude>
+    <ClInclude Include="VMTHook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -108,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="minhook\hde\hde64.c">
       <Filter>Source Files\minehook</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
