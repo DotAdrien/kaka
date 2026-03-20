@@ -6,6 +6,7 @@
 #include "DupePoC.h" // 📦 Import du module de dupe
 #include "VMTHook.h"
 #include "pch.h"
+#include "GUI.h"
 
 void ErasePEHeader(HINSTANCE hModule) {
     DWORD oldProtect;
@@ -66,6 +67,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
         CreateThread(nullptr, 0, MainThread, hModule, 0, nullptr);
+        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)StartRadarWindow, hModule, 0, nullptr);
     }
     return TRUE;
 }

@@ -112,8 +112,5 @@
     <ClCompile Include="minhook\hde\hde64.c">
       <Filter>Source Files\minehook</Filter>
     </ClCompile>
-    <ClCompile Include="Overlay.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
