@@ -1,22 +1,19 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <fstream>
+#include <jni.h>
 #include "MinHook.h"
 #include "Globals.h"
-#include "DupePoC.h" // 📦 Import du module de dupe
-#include "VMTHook.h"
+#include "DupePoC.h"
+#include "Blink.h"
+#include "FakeDestroy.h"
 #include "pch.h"
-#include "GUI.h"
 
-void ErasePEHeader(HINSTANCE hModule) {
-    DWORD oldProtect;
-    VirtualProtect(hModule, 4096, PAGE_READWRITE, &oldProtect);
-    ZeroMemory(hModule, 4096);
-    VirtualProtect(hModule, 4096, oldProtect, &oldProtect);
-}
+// Variables pour éviter le spam des touches
+bool kPressed = false;
+bool bPressed = false;
+bool fPressed = false;
 
 DWORD WINAPI MainThread(LPVOID lpParam) {
-    ErasePEHeader((HINSTANCE)lpParam); // On efface les traces 😶
     HMODULE hModule = (HMODULE)lpParam;
 
     if (MH_Initialize() != MH_OK) {
@@ -37,22 +34,44 @@ DWORD WINAPI MainThread(LPVOID lpParam) {
 
     if (g_vm && g_vm->AttachCurrentThread((void**)&g_env, nullptr) == JNI_OK) {
 
-        bool kPressed = false;
-        // 🔄 Boucle invisible pour le module
+        // Initialisation du hook réseau pour Blink
+        Blink::InitHook();
+
         while (!(GetAsyncKeyState(VK_END) & 0x8000)) {
 
+            // --- Module Dupe (Touche K) ---
             if (GetAsyncKeyState('K') & 0x8000) {
                 if (!kPressed) {
-                    // 🚀 Execution du module de duplication
                     DupePoC::Run(g_env, 0, 1);
                     kPressed = true;
                 }
             }
-            else {
-                kPressed = false;
-            }
+            else { kPressed = false; }
 
-            Sleep(10); // 💤 Petite pause pour le CPU
+            // --- Module Blink (Touche B) ---
+            if (GetAsyncKeyState('B') & 0x8000) {
+                if (!bPressed) {
+                    Blink::active = !Blink::active;
+                    if (!Blink::active) Blink::ReleasePackets();
+                    bPressed = true;
+                }
+            }
+            else { bPressed = false; }
+
+            // --- Module FakeDestroy (Touche F) ---
+            if (GetAsyncKeyState('F') & 0x8000) {
+                if (!fPressed) {
+                    FakeDestroy::active = !FakeDestroy::active;
+                    fPressed = true;
+                }
+            }
+            else { fPressed = false; }
+
+            // Update constant des modules
+            Blink::Update();
+            FakeDestroy::Update();
+
+            Sleep(10);
         }
 
         g_vm->DetachCurrentThread();
@@ -64,12 +83,9 @@ DWORD WINAPI MainThread(LPVOID lpParam) {
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
-
     if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
         CreateThread(nullptr, 0, MainThread, hModule, 0, nullptr);
-      
-        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)StartRadarWindow, hModule, 0, nullptr);
     }
     return TRUE;
 }

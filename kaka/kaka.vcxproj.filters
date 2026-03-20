@@ -17,22 +17,13 @@
     <ClInclude Include="framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Minimap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Mappings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Blink.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Aimbot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FakeDestroy.h">
@@ -76,19 +67,10 @@
     <ClCompile Include="Mappings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Aimbot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Minimap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Globals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Blink.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FakeDestroy.cpp">
