@@ -143,13 +143,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\buffer.h" />
-    <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\hde\hde32.h" />
-    <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\hde\hde64.h" />
-    <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\hde\pstdint.h" />
-    <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\hde\table32.h" />
-    <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\hde\table64.h" />
-    <ClInclude Include="..\..\..\..\Desktop\minhook-master\src\trampoline.h" />
     <ClInclude Include="Aimbot.h" />
     <ClInclude Include="Blink.h" />
     <ClInclude Include="DupePoC.h" />
@@ -158,15 +151,17 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Mappings.h" />
+    <ClInclude Include="minhook\buffer.h" />
+    <ClInclude Include="minhook\hde\hde32.h" />
+    <ClInclude Include="minhook\hde\hde64.h" />
+    <ClInclude Include="minhook\hde\pstdint.h" />
+    <ClInclude Include="minhook\hde\table32.h" />
+    <ClInclude Include="minhook\hde\table64.h" />
+    <ClInclude Include="minhook\MinHook.h" />
+    <ClInclude Include="minhook\trampoline.h" />
     <ClInclude Include="Minimap.h" />
-    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Desktop\minhook-master\src\buffer.c" />
-    <ClCompile Include="..\..\..\..\Desktop\minhook-master\src\hde\hde32.c" />
-    <ClCompile Include="..\..\..\..\Desktop\minhook-master\src\hde\hde64.c" />
-    <ClCompile Include="..\..\..\..\Desktop\minhook-master\src\hook.c" />
-    <ClCompile Include="..\..\..\..\Desktop\minhook-master\src\trampoline.c" />
     <ClCompile Include="Aimbot.cpp" />
     <ClCompile Include="Blink.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -175,13 +170,12 @@
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Mappings.cpp" />
+    <ClCompile Include="minhook\buffer.c" />
+    <ClCompile Include="minhook\hde\hde32.c" />
+    <ClCompile Include="minhook\hde\hde64.c" />
+    <ClCompile Include="minhook\hook.c" />
+    <ClCompile Include="minhook\trampoline.c" />
     <ClCompile Include="Minimap.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
